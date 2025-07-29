@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AR Card</title>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #loading {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: #000;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        z-index: 99;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="loading">🔍 Đang khởi động camera...</div>
+
+    <a-scene mindar-image="imageTargetSrc: targets.mind; autoStart: true;" embedded
+             loading-screen="enabled: false"
+             vr-mode-ui="enabled: false"
+             device-orientation-permission-ui="enabled: true">
+             
+      <a-assets>
+        <video id="myvideo" src="video.mp4" preload="auto" loop crossorigin="anonymous"></video>
+      </a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video src="#myvideo" width="1" height="0.56" position="0 0 0" rotation="0 0 0"></a-video>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      window.addEventListener("load", () => {
+        const scene = document.querySelector("a-scene");
+        scene.addEventListener("renderstart", () => {
+          document.querySelector("#loading").style.display = "none";
+        });
+
+        // Tự phát video khi marker được nhận diện
+        scene.addEventListener("targetFound", () => {
+          const vid = document.querySelector("#myvideo");
+          vid.play();
+        });
+      });
+    </script>
+  </body>
+</html>
